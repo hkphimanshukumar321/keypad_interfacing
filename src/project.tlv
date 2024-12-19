@@ -64,13 +64,13 @@
          
          m5+sseg_decoder($segments_n, top.random_number[3:0])
          //*uo_out[7:0] = ($output) ? {8'b01000110 , ~ $segments_n} : 0 ;
-         *uo_out[7:0] = ($output) ? (8'b10000000)  : 0 ;
-         *uo_out = /keypad$sampling ? {4'b0, /keypad$sample_row_mask} : {1'b0 , ~ $segments_n}  ;
+         //*uo_out[7] = ($output) ? (1'b1)  : 1'b0 ;
+         *uo_out[7:0] = /keypad$sampling ? {4'b0, /keypad$sample_row_mask} : {$output , ~ $segments_n}  ;
          
    
    
    // Connect Tiny Tapeout outputs. Note that uio_ outputs are not available in the Tiny-Tapeout-3-based FPGA boards.
-   *uo_out = 8'b0;
+   //*uo_out = 8'b0;
    m5_if_neq(m5_target, FPGA, ['*uio_out = 8'b0;'])
    m5_if_neq(m5_target, FPGA, ['*uio_oe = 8'b0;'])
 
