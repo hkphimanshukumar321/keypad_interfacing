@@ -52,13 +52,13 @@
    |pipe
       m5+PmodKYPD(|pipe, /keypad, @0, $num1[3:0], 1'b1, ['left:40, top: 80, width: 20, height: 20'])
       @0
-         $reset = *reset;
+         $reset = *reset | *ui_in[7];
          $num1[3:0] = *ui_in[3:0];
          
       @1
-         $valid = $reset ? 1'b0 :
-                                $equals_in && ! >>1$equals_in ;
-         $num2[3:0] = $valid ? >>1$num1 : >>1$num2 ;
+         //$button_pressed = $reset ? 1'b0 :
+                               // $equals_in && ! >>1$equals_in ;
+         $num2[3:0] = /keypad$report_button ? >>1$num1 : >>1$num2 ;
          $password[7:0] = {$num2[3:0] , $num1[3:0]} ;
          $output = ($password == 8'h68) ? 1 : 0 ;
          
@@ -121,7 +121,7 @@ logic [7:0]count;
    assign feed_back = lfsr[2] ^ lfsr[0] ;
    assign random_number = lfsr;
    
-   initial lfsr = 1'd1;
+   initial lfsr = 4'd1;
    
    always @(posedge clk)begin
       if(reset)
@@ -136,7 +136,7 @@ always @(posedge count[5]) begin
       if(reset)
             lfsr <= 4'd1;
          else
-            lfsr <= {lfsr[1:0] , feed_back};
+            lfsr <= {lfsr[2:0] , feed_back};
    end
            
 
